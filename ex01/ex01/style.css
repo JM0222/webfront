@@ -1,0 +1,18 @@
+h1{
+    color:blue;
+}
+body{
+    background: whitesmoke;
+}
+
+
+#detox  
+{
+    /* id 선택자 */
+    font-size: 3em;
+}
+.green
+{
+    /* class 선택자 */
+    color: darkcyan;
+}
