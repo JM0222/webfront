@@ -27,18 +27,15 @@
             height: 100px;
         }
     </style>
+    <!-- jQuery Script 불러오기 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" 
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div id="product-info">
         <img id="main-image" src="images/iphone-xs.jpeg" class="selected" title="iPhones XS">
-        <!-- inline 방식으로 스크립트 실행 -->
-        <!-- img 
-            id="main-image" 
-            src="images/iphone-xs.jpeg" 
-            class="selected" 
-            title="iPhones XS"
-            onclick="alert(this.title);" --> 
         <h2>iPhone Xs</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
             magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -47,93 +44,84 @@
             anim id est laborum.</p>
         <h3>Products</h3>
         <ul id="product-list">
-            <li><img class="sub-image" src="images/iphone-xs.jpeg" title="iPhone XS"></li>
-            <li><img class="sub-image" src="images/iphone-xr.jpeg" title="iPhone XR"></li>
-            <li><img class="sub-image" src="images/iphone8.jpeg" title="iPhone 8"></li>
-            <li><img class="sub-image" src="images/ipad-mini.jpeg" title="iPad Mini"></li>
+            <li><img class="sub-image" 
+                    src="images/iphone-xs.jpeg" 
+                    title="iPhone XS"
+                    data-color="red"></li>
+            <li><img class="sub-image" 
+                    src="images/iphone-xr.jpeg" 
+                    title="iPhone XR"
+                    data-color="green"></li>
+            <li><img class="sub-image" 
+                    src="images/iphone8.jpeg" 
+                    title="iPhone 8"
+                    data-color="blue"></li>
+            <li><img class="sub-image" 
+                    src="images/ipad-mini.jpeg" 
+                    title="iPad Mini"
+                    data-color="purple"></li>
         </ul>
         <input type="text" id="keyword" /><button id="btn-search">검색</button>
     </div>
 </body>
 <script>
-    function testAttribute() {
-        //  id가 main-image인 요소를 선택하여 속성을 확인
-        var obj = document.getElementById("main-image");
+    function testAttributeJQ() {
+        //  VJS로 선택하면 HTMLElement or HTMLCollection
+        //  jQuery로 선택하면 jQuery 객체로 포장
+        var obj = $("#main-image"); 
         console.log("#main-image:", obj);
-        //  선택한 요소의 모든 속성명을 반환
-        console.log(obj.getAttributeNames());
-        //  속성 조회: title 속성
-        console.log("title 속성:", 
-            obj.getAttribute("title"));
 
-        //  하단의 Products 이미지들 (.sub-image)
-        //  선택하여 title 속성을 확인
-        var subs = 
-        document.getElementsByClassName("sub-image");
+        //  만약 jQuery 포장 내의 실제 Element의 속성 사용을 위해서는
+        //  포장에서 끄집어 내야 한다
+        //  선택한 요소의 모든 속성명을 반환
+        console.log(obj[0].getAttributeNames());
+        //  속성 조회: title 속성
+        //  .attr(속성명) : getter(getAttribute), .attr(속성명, 값) : setter(setAttribute)
+        console.log("title 속성:", obj.attr("title"));
+
+        var subs = $(".sub-image");
         console.log(".sub-image:", subs);
-        //  HTMLCollection -> loop 필요
+        //  jQuery에서 내부요소를 접근하면 -> jQuery가 아니다
         for (var i = 0; i < subs.length; i++) {
-            var sub = subs[i];
-            console.log("sub title 속성:", sub.getAttribute("title"));
+            var sub = $(subs[i]);   //  jQuery 객체로 포장 -> jQuery 메서드 사용 가능해짐
+            console.log("sub title 속성:", sub.attr("title"));
         }
 
     }
-    // testAttribute();
-    //  이벤트 리스너 부착 방법 2.
-    document.getElementById("main-image")
-        .onclick = function(event) {
+    testAttributeJQ();
+    //  jQuery에 이벤트 리스너 부착: .on(이벤트명, 리스너 함수)
+    $("#main-image").on("click", function(event) {
             //  event -> 발생한 이벤트의 정보
             console.log(event);
             console.log("이벤트 명:", event.__proto__);
-            console.log("이벤트 발생 객체:", event.target);
-            //  중요: event.target으로 이벤트를 발생시킨
-            //    객체를 참조할 수 있다
-        };
-    //  input#keyword에 내용을 입력하면
-    //  변경된 내용을 #btn-search에 출력해 봅시다.
-    /*
-    document.getElementById("keyword")
-        .onkeyup = function(event) {
-            // 이벤트를 발생시킨 객체 확인
+            console.log("이벤트 발생 객체:", this); //  jQuery 이벤트 처리 함수의 this는 이벤트를 발생시킨 객체 == this
+        });
+    
+    //  jQuery 초기화를 위해서 document가 완료된 상태에서 진행 window.load
+    //  document가 ready 상태임을 확인
+    $(document).ready(function() {
+        $("#keyword").on("keyup", function(event) {
             console.log(event.target);
             console.log("눌러진 키:", event.keyCode);
-            var btn = document.querySelector("#btn-search");
-            btn.innerText = event.target.value + ": 검색";
-        };
-    */
+            var  btn = $("#btn-search");
+            btn.text(this.value + ": 검색");    //  .text() -> VJS innerText 속성
+        });
 
-    //  리스너 부착 방법 3. addEventListener
-    //  -> 가장 추천
-    window.addEventListener("load", function(event) {
-        //  DOM 구성이 완료되지 않은 상태에서
-        //  요소 선택하고자 하면 오작동
-        //  load 이벤트를 이용 DOM이 완전 구성이
-        //  끝난 상태에서 페이지를 초기화 해야 한다
-        document.getElementById("keyword")
-            .addEventListener("keyup", function(event) {
-                console.log(event.target);
-                console.log("눌러진 키:", event.keyCode);
-                var btn = document.querySelector("#btn-search");
-                btn.innerText = event.target.value + ": 검색";
-            });
+        var products = $(".sub-image");
+        //  jQuery는 검색된 요소가 복수개에도 루프를 돌리지 않는다
+        products.on("click", function(event) {
+            var mainImage = $("#main-image");
+            //  이벤트를 발생시킨 객체 확인
+            var obj = $(this); //  .sub-image
+            
+            mainImage.attr("src", obj.attr("src"));
+            mainImage.attr("title", obj.attr("title"));
 
+            $("#product-info h2").text(obj.attr("title"));
 
-        var products = document.getElementsByClassName("sub-image");
-        console.log(products)
-        for (var i = 0; i < products.length; i++){
-            var product = products[i];
-            product.addEventListener("click",function(event){
-                var mainImage = document.getElementById("main-image");
-                var obj = event.target; // sub-image
-                mainImage.setAttribute("src", obj.getAttribute("src"));
-                mainImage.setAttribute("title", obj.getAttribute("title"));
-
-                var title = document.querySelector("#product-info h2");
-                title.innerText = obj.getAttribute("title");
-            })
-        }
-    });   
-    
-    
+            $("#product-info h2").css("color", obj.data("color")); //   data-color 속성을 확인하는 코드
+            //  속성 중에서 data- 접두사가 붙은 속성(사용자 정의 속성)은 .data 메서드로 접근 가능
+        });
+    });    
 </script>
 </html>
