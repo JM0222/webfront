@@ -103,7 +103,7 @@
         $("#keyword").on("keyup", function(event) {
             console.log(event.target);
             console.log("눌러진 키:", event.keyCode);
-            var  btn = $("#btn-search");
+            var btn = $("#btn-search");
             btn.text(this.value + ": 검색");    //  .text() -> VJS innerText 속성
         });
 
@@ -112,14 +112,14 @@
         products.on("click", function(event) {
             var mainImage = $("#main-image");
             //  이벤트를 발생시킨 객체 확인
-            var obj = $(this); //  .sub-image
+            // var obj = $(this); //  .sub-image
             
-            mainImage.attr("src", obj.attr("src"));
-            mainImage.attr("title", obj.attr("title"));
+            mainImage.attr("src", $(this).attr("src"));
+            mainImage.attr("title", $(this).attr("title"));
 
-            $("#product-info h2").text(obj.attr("title"));
+            $("#product-info h2").text($(this).attr("title"));
 
-            $("#product-info h2").css("color", obj.data("color")); //   data-color 속성을 확인하는 코드
+            $("#product-info h2").css("color", $(this).data("color")); //   data-color 속성을 확인하는 코드
             //  속성 중에서 data- 접두사가 붙은 속성(사용자 정의 속성)은 .data 메서드로 접근 가능
         });
     });    
