@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Example</title>
+    <!--Vue.js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!--Style-->
+    <style>
+        #app {
+            border:1px dotted red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello Vue!</h1>
+
+    <div id="app"> <!--App 영역-->
+        {{message}}
+    </div>
+    <script>
+        // vjs
+        // document.getElementById("app").innerText = "hello , vjs";
+    </script>
+
+    <!-- Vue 인스턴스 생성 MVVN 패턴에서 VM(viewmodel)역할 수행-->
+    <script>
+        var app = new Vue({
+            el:"#app", // View 로 사용할 DOM(HTMLElement)-> id로 셀렉트
+            data:{     // Model 데이터
+                message:"Hello, Vue.js"
+            },
+            // 실행의 단계마다 이벤트 발생 -> 각 단계별로 Hook 함수가 연결된다
+            beforeCreate:function(){
+                // 객체 생성 아직 안된상태
+                console.log("beforeCreate");
+            },
+            created: function(){
+                // viewmodel 생성되었으나 view가 연결이 아직안된상태
+                console.log("created");
+            },
+            mounted: function(){
+                // view가 연결되어서 DOM에 접근 가능한 상태
+                console.log("mounted");
+            },
+            updated:function(){
+                console.log("updated");
+            }
+        });
+    </script>
+</body>
+</html>
